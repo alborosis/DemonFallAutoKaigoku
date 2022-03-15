@@ -1,84 +1,32 @@
+
 wait(function() pcall(function() wait(print(wait())) end) end)
-repeat wait() until game:IsLoaded()
-local TableForEnv = {["LoopTimes"] = 0}
-while TableForEnv["LoopTimes"] <= 25 do TableForEnv["LoopTimes"] = TableForEnv["LoopTimes"] + 1; wait(0.1) end
-if not game:GetService("Workspace").Npcs:WaitForChild("Kaigakû"):FindFirstChildOfClass("Part") then
-    wait(function() pcall(function() wait(print(wait())) end) end)
 repeat wait() until game:IsLoaded()
 local PlaceID = game.PlaceId
 if PlaceID == 5094651510 then
-    local AllIDs = {}
-    local foundAnything = ""
-    local actualHour = os.date("!*t").hour
-    local Deleted = false
-    local File = pcall(function()
-        AllIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
-    end)
-    if not File then
-        table.insert(AllIDs, actualHour)
-        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-    end
-    function TPReturner()
-        local Site;
-        if foundAnything == "" then
-            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100'))
-        else
-            Site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' .. PlaceID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-        end
-        local ID = ""
-        if Site.nextPageCursor and Site.nextPageCursor ~= "null" and Site.nextPageCursor ~= nil then
-            foundAnything = Site.nextPageCursor
-        end
-        local num = 0;
-        for i,v in pairs(Site.data) do
-            local Possible = true
-            ID = tostring(v.id)
-            if tonumber(v.maxPlayers) > tonumber(v.playing) then
-                for _,Existing in pairs(AllIDs) do
-                    if num ~= 0 then
-                        if ID == tostring(Existing) then
-                            Possible = false
-                        end
-                    else
-                        if tonumber(actualHour) ~= tonumber(Existing) then
-                            local delFile = pcall(function()
-                                delfile("NotSameServers.json")
-                                AllIDs = {}
-                                table.insert(AllIDs, actualHour)
-                            end)
-                        end
-                    end
-                    num = num + 1
-                end
-                if Possible == true then
-                    table.insert(AllIDs, ID)
-                    wait()
-                    pcall(function()
-                        writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(AllIDs))
-                        wait()
-                        game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
-                    end)
-                    wait(4)
-                end
-            end
-        end
-    end
+    local Teleport = loadstring(game:HttpGet("https://raw.githubusercontent.com/alborosis/DemonFallAutoKaigoku/e494e82c71585f3fb05cc224f44ac307d7ed9cc7/Teleport.lua"))()
+    local TableForEnv = {["LoopTimes"] = 0}
+    while TableForEnv["LoopTimes"] <= 25 do TableForEnv["LoopTimes"] = TableForEnv["LoopTimes"] + 1; wait(0.1) end
+    if not game:GetService("Workspace").Npcs:WaitForChild("Kaigakû"):FindFirstChildOfClass("Part") then
+        Teleport()
+    else if getgenv().WebhookEnabled == true then
+        local data = {['username'] = 'Someone found a boss!', 
+        ['content'] = game.Players.LocalPlayer.Name.." is the someone that found the boss!"
+    }
 
-    function Teleport()
-        while wait() do
-            pcall(function()
-                TPReturner()
-                if foundAnything ~= "" then
-                    TPReturner()
-                end
-            end)
-        end
+        data = game:GetService("HttpService"):JSONEncode(data)
+	
+        local success,errorm = pcall(function()
+        local response = syn.request(
+            {
+                Url = getgenv().Webhook,
+                Method = "POST",
+                Headers = {
+                    ["Content-Type"] = "application/json"
+                },
+                Body = data
+            }
+        )
+        end)
     end
-
-local TableForEnv = {["LoopTimes"] = 0}
-while TableForEnv["LoopTimes"] <= 25 do TableForEnv["LoopTimes"] = TableForEnv["LoopTimes"] + 1; wait(0.1) end
-if not game:GetService("Workspace").Npcs:WaitForChild("Kaigakû"):FindFirstChildOfClass("Part") then
-    Teleport()
-end
-end
+    end
 end
