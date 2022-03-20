@@ -9,14 +9,13 @@ repeat
 until game:IsLoaded()
 
 if PlaceID == 5094651510 then
-	local Teleport = loadstring(
-		game:HttpGet(
-			"https://raw.githubusercontent.com/alborosis/DemonFallAutoKaigoku/e494e82c71585f3fb05cc224f44ac307d7ed9cc7/Teleport.lua"
-		)
-	)
 	task.wait(getgenv().WaitTimes)
 	if not game:GetService("Workspace"):FindFirstChild("Kaigaku") then
-		Teleport()
+		loadstring(
+		game:HttpGet(
+			"https://raw.githubusercontent.com/alborosis/DemonFallAutoKaigoku/e494e82c71585f3fb05cc224f44ac307d7ed9cc7/Teleport.lua"
+		)()
+	)
 	else
 		if getgenv().WebhookEnabled == true then
 			local data = {
