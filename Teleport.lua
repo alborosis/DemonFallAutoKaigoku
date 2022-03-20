@@ -4,6 +4,7 @@ local AllIDs = {}
 local foundAnything = ""
 local actualHour = os.date("!*t").hour
 local Deleted = false
+
 if isfile("NotSameServers.json") then
 	Http:JSONDecode(readfile("NotSameServers.json"))
 else
@@ -53,20 +54,20 @@ function TPReturner()
 			end
 			if Possible == true then
 				table.insert(AllIDs, ID)
-				wait()
+				task.wait()
 				pcall(function()
 					writefile("NotSameServers.json", game:GetService("HttpService"):JSONEncode(AllIDs))
-					wait()
+					task.wait()
 					game:GetService("TeleportService"):TeleportToPlaceInstance(PlaceID, ID, game.Players.LocalPlayer)
 				end)
-				wait(4)
+				task.wait(4)
 			end
 		end
 	end
 end
 
 function Teleport()
-	while wait() do
+	while task.wait() do
 		pcall(function()
 			TPReturner()
 			if foundAnything ~= "" then
